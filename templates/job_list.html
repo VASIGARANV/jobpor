@@ -1,0 +1,134 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Board</title>
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+    .job-card {
+      border: none;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .job-card .badge-time {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #d0e9ff;
+      color: #0056b3;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 1rem;
+    }
+    .job-icon {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+    }
+    .apply-btn {
+      background: #009cff;
+      border: none;
+      font-weight: 500;
+    }
+    .apply-btn:hover {
+      background: #0077cc;
+    }
+    .feat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 1rem;
+      font-size: 0.9rem;
+    }
+    .feat-list li::before {
+      content: "•";
+      color: #009cff;
+      margin-right: 0.5rem;
+    }
+    </style>
+</head>
+<body>
+  <nav class="navbar navbar-light bg-white shadow-sm mb-4">
+    <div class="container">
+      <a class="navbar-brand" href=""><img src="https://png.pngtree.com/png-vector/20231017/ourmid/pngtree-flat-style-blue-code-icon-on-white-backgroundblue-code-png-image_10271714.png" class="job-icon"></a>
+      <a class ="navbar-brand" href="#">Home</a>
+      <a class ="navbar-brand" href="#">Find Jobs</a>
+      <a class ="navbar-brand" href="#">Find Talents</a>
+      <a class ="navbar-brand" href="#">About us</a>
+      <a class ="navbar-brand" href="#">Testimonials</a>
+      <a href="{% url 'job_create' %}" class="btn btn-primary">Create Job</a>
+    </div>
+  </nav>
+
+  <div class="container mb-4">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        {{ filter.form.title|as_crispy_field }}
+      </div>
+      <div class="col-md-3">
+        {{ filter.form.location|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter.form.type|as_crispy_field }}
+      </div>
+      <div class="col-md-4 d-flex align-items-center">
+        <label class="me-2 mb-0">Salary range:</label>
+        {{ filter.form.salary_min|as_crispy_field }}
+        <span class="mx-2">–</span>
+        {{ filter.form.salary_max|as_crispy_field }}
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-secondary">Filter</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="container py-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+      {% for job in filter.qs %}
+      <div class="col">
+        <div class="card job-card h-100">
+          <div class="badge-time">24h Ago</div>
+          <div class="card-body d-flex flex-column align-items-start">
+            {% if job.company_logo %}
+              <img src= "{{job.company_logo}}" class="job-icon" alt="{{ job.company }}">
+            {% else %}
+              <div class="bg-secondary rounded job-icon"></div>
+            {% endif %}
+
+            <h5 class="card-title fw-semibold">{{ job.title }}</h5>
+            <p class="text-muted mb-2">{{ job.company }}</p>
+
+            <ul class="feat-list w-100">
+              <li><i class="bi bi-person"></i> 1–3 yr Exp</li>
+              <li><i class="bi bi-briefcase"></i> Onsite</li>
+              <li><i class="bi bi-layers"></i> 12 LPA</li>
+            </ul>
+
+            <ul class="feat-list flex-grow-1">
+              <li>{{job.requirements}}</li>
+              <li>A user-friendly interface lets you browse stunning photos and videos</li>
+              <li>Filter destinations based on interests and travel style, and create personalized</li>
+            </ul>
+
+            <a href="#" class="btn apply-btn w-100 mt-auto">Apply Now</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-warning">No jobs found.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
